@@ -54,6 +54,22 @@ mongoose
   .then(() => {
     return Recipe.findOneAndUpdate({title: "Rigatoni alla Genovese"}, {duration: 100})
   })
+  .then(() => {
+    return Recipe.deleteOne({title: "Carrot Cake"})
+  })
+  .then(() => {
+    console.log("Carrot Cake removed successfully")
+  })
+  .then(() => {
+    mongoose.connection.on("disconnected", ()=>console.log("se ha desconnectado la base de datos"))
+        mongoose.connection.on("error", ()=>console.log("error en la base de datos"))
+        process.on("SIGINT", ()=>{
+            console.log("SIGINT ", process.pid);
+            mongoose.disconnect();
+            process.kill(process.pid);
+        })
+  })
+
 
   .catch(error => {
     console.error('Error connecting to the database', error);
